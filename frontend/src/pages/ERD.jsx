@@ -14,6 +14,8 @@ import axios from "axios";
 import "./ERD.css";
 
 // Table Node Component
+// Table Node Component with Data Types and Constraints
+// Table Node Component with Icons and Colored Constraints
 const TableNode = ({ data }) => (
   <div className="table-node">
     <div className="table-header">
@@ -23,11 +25,43 @@ const TableNode = ({ data }) => (
       )}
     </div>
     <div className="table-content">
-      {data.columns.map((col, idx) => (
+      {data.columns.map((col) => (
         <div key={col.name} className="column-row">
           <div className="column-info">
             <span className="column-name">{col.name}</span>
             <span className="column-type">{col.type}</span>
+          </div>
+          <div
+            className="column-constraints"
+            style={{ marginLeft: "auto", display: "flex", gap: "6px" }}
+          >
+            {col.isPrimary && (
+              <span
+                className="constraint pk"
+                title="Primary Key"
+                style={{ color: "#10b981", fontWeight: "bold" }}
+              >
+                PK
+              </span>
+            )}
+            {col.isForeignKey && (
+              <span
+                className="constraint fk"
+                title="Foreign Key"
+                style={{ color: "#3b82f6", fontWeight: "bold" }}
+              >
+                FK
+              </span>
+            )}
+            {col.nullable && (
+              <span
+                className="constraint not-null"
+                title="Not Null"
+                style={{ color: "#4483efff", fontWeight: "bold" }}
+              >
+                NULL
+              </span>
+            )}
           </div>
           {col.isPrimary && (
             <Handle
