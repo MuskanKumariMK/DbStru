@@ -1,0 +1,674 @@
+{
+  "dbo.__EFMigrationsHistory": {
+    "columns": [
+      "MigrationId",
+      "ProductVersion"
+    ],
+    "column_types": {
+      "MigrationId": "nvarchar",
+      "ProductVersion": "nvarchar"
+    },
+    "nullable": {
+      "MigrationId": false,
+      "ProductVersion": false
+    },
+    "primary_keys": [
+      "MigrationId"
+    ],
+    "foreign_keys": [],
+    "row_count": 2
+  },
+  "dbo.CustomerNotifications": {
+    "columns": [
+      "Id",
+      "CustomerId",
+      "NotificationId",
+      "RestaurantId",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "CustomerId": "uniqueidentifier",
+      "NotificationId": "uniqueidentifier",
+      "RestaurantId": "uniqueidentifier",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "CustomerId": false,
+      "NotificationId": false,
+      "RestaurantId": false,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "CustomerId",
+        "ref_table": "Customers",
+        "ref_column": "Id"
+      },
+      {
+        "column": "NotificationId",
+        "ref_table": "Notifications",
+        "ref_column": "Id"
+      }
+    ],
+    "row_count": 0
+  },
+  "dbo.Customers": {
+    "columns": [
+      "Id",
+      "RestaurantId",
+      "FullName",
+      "Email",
+      "Mobile",
+      "Role",
+      "ProfileImage",
+      "ImageFileName",
+      "ImageContentType",
+      "IsVerified",
+      "IsActive",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "RestaurantId": "uniqueidentifier",
+      "FullName": "nvarchar",
+      "Email": "nvarchar",
+      "Mobile": "nvarchar",
+      "Role": "nvarchar",
+      "ProfileImage": "varbinary",
+      "ImageFileName": "nvarchar",
+      "ImageContentType": "nvarchar",
+      "IsVerified": "bit",
+      "IsActive": "bit",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "RestaurantId": false,
+      "FullName": false,
+      "Email": false,
+      "Mobile": false,
+      "Role": true,
+      "ProfileImage": true,
+      "ImageFileName": true,
+      "ImageContentType": true,
+      "IsVerified": false,
+      "IsActive": false,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "RestaurantId",
+        "ref_table": "Restaurants",
+        "ref_column": "Id"
+      }
+    ],
+    "row_count": 1
+  },
+  "dbo.Feature": {
+    "columns": [
+      "Id",
+      "Name",
+      "Type",
+      "Description",
+      "Included",
+      "Limit",
+      "Icon"
+    ],
+    "column_types": {
+      "Id": "int",
+      "Name": "nvarchar",
+      "Type": "int",
+      "Description": "nvarchar",
+      "Included": "bit",
+      "Limit": "int",
+      "Icon": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "Name": false,
+      "Type": false,
+      "Description": true,
+      "Included": false,
+      "Limit": true,
+      "Icon": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 9
+  },
+  "dbo.Messages": {
+    "columns": [
+      "Id",
+      "RecipientCustomerId",
+      "Subject",
+      "Recipient",
+      "Content",
+      "Type",
+      "SentAt",
+      "Status",
+      "ExternalId",
+      "From",
+      "ScheduledAt",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "RecipientCustomerId": "uniqueidentifier",
+      "Subject": "nvarchar",
+      "Recipient": "nvarchar",
+      "Content": "nvarchar",
+      "Type": "int",
+      "SentAt": "datetime2",
+      "Status": "int",
+      "ExternalId": "nvarchar",
+      "From": "nvarchar",
+      "ScheduledAt": "datetime2",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "RecipientCustomerId": false,
+      "Subject": false,
+      "Recipient": false,
+      "Content": false,
+      "Type": false,
+      "SentAt": false,
+      "Status": false,
+      "ExternalId": false,
+      "From": false,
+      "ScheduledAt": true,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "RecipientCustomerId",
+        "ref_table": "Customers",
+        "ref_column": "Id"
+      }
+    ],
+    "row_count": 1
+  },
+  "dbo.Notifications": {
+    "columns": [
+      "Id",
+      "RestaurantId",
+      "PlanId",
+      "Message",
+      "CreatedAt",
+      "IsRead",
+      "TaskItemId",
+      "Type",
+      "RecipientType",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "RestaurantId": "uniqueidentifier",
+      "PlanId": "uniqueidentifier",
+      "Message": "nvarchar",
+      "CreatedAt": "datetime2",
+      "IsRead": "bit",
+      "TaskItemId": "uniqueidentifier",
+      "Type": "nvarchar",
+      "RecipientType": "int",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "RestaurantId": true,
+      "PlanId": true,
+      "Message": false,
+      "CreatedAt": false,
+      "IsRead": false,
+      "TaskItemId": true,
+      "Type": true,
+      "RecipientType": false,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 8
+  },
+  "dbo.PricingPlanFeatures": {
+    "columns": [
+      "PricingPlanId",
+      "FeatureId"
+    ],
+    "column_types": {
+      "PricingPlanId": "uniqueidentifier",
+      "FeatureId": "int"
+    },
+    "nullable": {
+      "PricingPlanId": false,
+      "FeatureId": false
+    },
+    "primary_keys": [
+      "FeatureId",
+      "PricingPlanId"
+    ],
+    "foreign_keys": [
+      {
+        "column": "FeatureId",
+        "ref_table": "Feature",
+        "ref_column": "Id"
+      },
+      {
+        "column": "PricingPlanId",
+        "ref_table": "PricingPlans",
+        "ref_column": "Id"
+      }
+    ],
+    "row_count": 9
+  },
+  "dbo.PricingPlans": {
+    "columns": [
+      "Id",
+      "Name",
+      "Subtitle",
+      "Icon",
+      "Popular",
+      "MonthlyPrice",
+      "YearlyPrice",
+      "Savings",
+      "Description",
+      "Cta",
+      "Color",
+      "TrialDays",
+      "IsActive",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "Name": "nvarchar",
+      "Subtitle": "nvarchar",
+      "Icon": "nvarchar",
+      "Popular": "bit",
+      "MonthlyPrice": "decimal",
+      "YearlyPrice": "decimal",
+      "Savings": "nvarchar",
+      "Description": "nvarchar",
+      "Cta": "nvarchar",
+      "Color": "nvarchar",
+      "TrialDays": "int",
+      "IsActive": "bit",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "Name": false,
+      "Subtitle": true,
+      "Icon": true,
+      "Popular": false,
+      "MonthlyPrice": false,
+      "YearlyPrice": false,
+      "Savings": true,
+      "Description": true,
+      "Cta": true,
+      "Color": true,
+      "TrialDays": true,
+      "IsActive": false,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 3
+  },
+  "dbo.RefreshTokens": {
+    "columns": [
+      "Id",
+      "Token",
+      "UserId",
+      "Expires",
+      "Created",
+      "Revoked"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "Token": "nvarchar",
+      "UserId": "uniqueidentifier",
+      "Expires": "datetime2",
+      "Created": "datetime2",
+      "Revoked": "datetime2"
+    },
+    "nullable": {
+      "Id": false,
+      "Token": false,
+      "UserId": false,
+      "Expires": false,
+      "Created": false,
+      "Revoked": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 1
+  },
+  "dbo.RestaurantPlans": {
+    "columns": [
+      "Id",
+      "RestaurantId",
+      "PlanId",
+      "StartDate",
+      "EndDate",
+      "Status",
+      "PlanType",
+      "SelectedBillingCycle",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "RestaurantId": "uniqueidentifier",
+      "PlanId": "uniqueidentifier",
+      "StartDate": "datetime2",
+      "EndDate": "datetime2",
+      "Status": "int",
+      "PlanType": "int",
+      "SelectedBillingCycle": "int",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "RestaurantId": false,
+      "PlanId": false,
+      "StartDate": false,
+      "EndDate": false,
+      "Status": false,
+      "PlanType": false,
+      "SelectedBillingCycle": false,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "PlanId",
+        "ref_table": "PricingPlans",
+        "ref_column": "Id"
+      }
+    ],
+    "row_count": 19
+  },
+  "dbo.Restaurants": {
+    "columns": [
+      "Id",
+      "FirstName",
+      "LastName",
+      "UserName",
+      "Email",
+      "Mobile",
+      "Country",
+      "Password",
+      "Role",
+      "ProfileImage",
+      "ImageFileName",
+      "ImageContentType",
+      "IsVerified",
+      "IsActive",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "FirstName": "nvarchar",
+      "LastName": "nvarchar",
+      "UserName": "nvarchar",
+      "Email": "nvarchar",
+      "Mobile": "nvarchar",
+      "Country": "nvarchar",
+      "Password": "nvarchar",
+      "Role": "nvarchar",
+      "ProfileImage": "varbinary",
+      "ImageFileName": "nvarchar",
+      "ImageContentType": "nvarchar",
+      "IsVerified": "bit",
+      "IsActive": "bit",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "FirstName": false,
+      "LastName": false,
+      "UserName": false,
+      "Email": false,
+      "Mobile": false,
+      "Country": false,
+      "Password": false,
+      "Role": true,
+      "ProfileImage": true,
+      "ImageFileName": true,
+      "ImageContentType": true,
+      "IsVerified": false,
+      "IsActive": false,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 1
+  },
+  "dbo.RestaurantUsages": {
+    "columns": [
+      "Id",
+      "RestaurantId",
+      "FeatureId",
+      "UsedCount",
+      "LastResetDate",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "RestaurantId": "uniqueidentifier",
+      "FeatureId": "int",
+      "UsedCount": "int",
+      "LastResetDate": "datetime2",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "RestaurantId": false,
+      "FeatureId": false,
+      "UsedCount": false,
+      "LastResetDate": false,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [
+      {
+        "column": "FeatureId",
+        "ref_table": "Feature",
+        "ref_column": "Id"
+      },
+      {
+        "column": "RestaurantId",
+        "ref_table": "Restaurants",
+        "ref_column": "Id"
+      }
+    ],
+    "row_count": 4
+  },
+  "dbo.SuperAdmins": {
+    "columns": [
+      "Id",
+      "Username",
+      "Email",
+      "Password",
+      "Role",
+      "ProfileImage",
+      "ImageFileName",
+      "ImageContentType",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "Username": "nvarchar",
+      "Email": "nvarchar",
+      "Password": "nvarchar",
+      "Role": "nvarchar",
+      "ProfileImage": "varbinary",
+      "ImageFileName": "nvarchar",
+      "ImageContentType": "nvarchar",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "Username": false,
+      "Email": false,
+      "Password": false,
+      "Role": false,
+      "ProfileImage": true,
+      "ImageFileName": true,
+      "ImageContentType": true,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 1
+  },
+  "dbo.Tasks": {
+    "columns": [
+      "Id",
+      "RestaurantId",
+      "Title",
+      "Description",
+      "DueDate",
+      "Status",
+      "AssignedTo",
+      "CreatedAt",
+      "CreatedBy",
+      "UpdatedAt",
+      "UpdatedBy"
+    ],
+    "column_types": {
+      "Id": "uniqueidentifier",
+      "RestaurantId": "uniqueidentifier",
+      "Title": "nvarchar",
+      "Description": "nvarchar",
+      "DueDate": "datetime2",
+      "Status": "int",
+      "AssignedTo": "nvarchar",
+      "CreatedAt": "datetime2",
+      "CreatedBy": "nvarchar",
+      "UpdatedAt": "datetime2",
+      "UpdatedBy": "nvarchar"
+    },
+    "nullable": {
+      "Id": false,
+      "RestaurantId": false,
+      "Title": false,
+      "Description": false,
+      "DueDate": false,
+      "Status": false,
+      "AssignedTo": true,
+      "CreatedAt": true,
+      "CreatedBy": true,
+      "UpdatedAt": true,
+      "UpdatedBy": true
+    },
+    "primary_keys": [
+      "Id"
+    ],
+    "foreign_keys": [],
+    "row_count": 6
+  }
+}
