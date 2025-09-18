@@ -24,7 +24,7 @@ app.add_middleware(
 # # Endpoint to fetch schema dynamically
 # @app.get("/api/schema")
 # def get_schema():
-#     connection_string = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-MOQH8H5\\SQLEXPRESS;DATABASE=RestoMinderDb;UID=sa;PWD=admin@123;"
+#     connection_string = "DRIVER={ODBC Driver 17 for SQL Server};SERVER=DESKTOP-MOQH8H5\\SQLEXPRESS;DATABASE=employee;UID=sa;PWD=admin@123;"
 #     conn = connect_sqlserver(connection_string)
 #     if conn:
 #         schema = fetch_schema(conn)

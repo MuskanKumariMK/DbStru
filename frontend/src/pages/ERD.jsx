@@ -225,6 +225,6 @@ export default function ERD() {
 }
 // DRIVER={ODBC Driver 17 for SQL Server};
 // SERVER=DESKTOP-MOQH8H5\SQLEXPRESS;
-// DATABASE=RestoMinderDb;
+// DATABASE=employee;
 // UID=sa;
 // PWD=admin@123;
