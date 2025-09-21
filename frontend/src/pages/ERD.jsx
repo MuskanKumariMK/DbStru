@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -10,12 +10,9 @@ import ReactFlow, {
   Handle,
   Position,
 } from "react-flow-renderer";
-import axios from "axios";
 import "./ERD.css";
 
 // Table Node Component
-// Table Node Component with Data Types and Constraints
-// Table Node Component with Icons and Colored Constraints
 const TableNode = ({ data }) => (
   <div className="table-node">
     <div className="table-header">
@@ -36,28 +33,19 @@ const TableNode = ({ data }) => (
             style={{ marginLeft: "auto", display: "flex", gap: "6px" }}
           >
             {col.isPrimary && (
-              <span
-                className="constraint pk"
-                title="Primary Key"
-                style={{ color: "#10b981", fontWeight: "bold" }}
-              >
+              <span className="constraint pk" style={{ color: "#10b981" }}>
                 PK
               </span>
             )}
             {col.isForeignKey && (
-              <span
-                className="constraint fk"
-                title="Foreign Key"
-                style={{ color: "#3b82f6", fontWeight: "bold" }}
-              >
+              <span className="constraint fk" style={{ color: "#3b82f6" }}>
                 FK
               </span>
             )}
             {col.nullable && (
               <span
                 className="constraint not-null"
-                title="Not Null"
-                style={{ color: "#4483efff", fontWeight: "bold" }}
+                style={{ color: "#4483ef" }}
               >
                 NULL
               </span>
@@ -91,154 +79,91 @@ const relationshipColors = {
   "N:N": "#8b5cf6",
 };
 
-export default function ERD() {
-  const [connString, setConnString] = useState("");
+export default function ERD({ schema }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [connectionStatus, setConnectionStatus] = useState("disconnected");
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges]
   );
 
-  const fetchSchema = async () => {
-    if (!connString.trim()) {
-      setError("Please enter a valid connection string.");
-      return;
-    }
+  React.useEffect(() => {
+    if (!schema) return;
 
-    setIsLoading(true);
-    setError(null);
-    setConnectionStatus("connecting");
+    const newNodes = [];
+    const newEdges = [];
+    const tables = Object.entries(schema);
+    const cols = Math.ceil(Math.sqrt(tables.length));
+    const TABLE_WIDTH = 550;
+    const COLUMN_HEIGHT = 30;
 
-    try {
-      const res = await axios.post("http://127.0.0.1:8000/api/schema", {
-        connection_string: connString,
+    tables.forEach(([tableName, details], index) => {
+      const row = Math.floor(index / cols);
+      const col = index % cols;
+      const tableHeight = details.columns.length * COLUMN_HEIGHT + 60;
+      const x = col * (TABLE_WIDTH + 50);
+      const y = row * (tableHeight + 50);
+
+      const columnsWithMetadata = details.columns.map((colName) => ({
+        name: colName,
+        type: details.column_types[colName],
+        isPrimary: details.primary_keys.includes(colName),
+        isForeignKey:
+          details.foreign_keys.some((fk) => fk.column === colName) ||
+          details.primary_keys.includes(colName),
+        nullable: details.nullable[colName],
+      }));
+
+      newNodes.push({
+        id: tableName,
+        type: "tableNode",
+        data: {
+          tableName,
+          columns: columnsWithMetadata,
+          rowCount: details.row_count,
+        },
+        position: { x, y },
+        draggable: true,
       });
-      const schema = res.data;
-      console.log("Respose from backend:", schema);
-      const newNodes = [];
-      const newEdges = [];
-      const tables = Object.entries(schema);
-      const cols = Math.ceil(Math.sqrt(tables.length));
-      const TABLE_WIDTH = 550;
-      const TABLE_HEIGHT = 150; // approximate height per table; increase if many columns
-      const COLUMN_HEIGHT = 30;
-      tables.forEach(([tableName, details], index) => {
-        const row = Math.floor(index / cols);
-        const col = index % cols;
 
-        const tableHeight = details.columns.length * COLUMN_HEIGHT + 60;
-        const x = col * (TABLE_WIDTH + 50);
-        const y = row * (tableHeight + 50);
-        const columnsWithMetadata = details.columns.map((colName) => ({
-          name: colName,
-          type: details.column_types[colName],
-          isPrimary: details.primary_keys.includes(colName),
-          isForeignKey:
-            details.foreign_keys.some((fk) => fk.column === colName) ||
-            details.primary_keys.includes(colName),
-          nullable: details.nullable[colName],
-        }));
+      details.foreign_keys.forEach((fk) => {
+        let relationType = "1:N";
+        if (fk.isUnique && details.primary_keys.includes(fk.column))
+          relationType = "1:1";
+        if (fk.isManyToMany) relationType = "N:N";
 
-        const randomOffset = () => Math.random() * 50 - 25;
-        newNodes.push({
-          id: tableName,
-          type: "tableNode",
-          data: {
-            tableName,
-            columns: columnsWithMetadata,
-            rowCount: details.row_count,
+        const targetTableName = Object.keys(schema).find((t) =>
+          t.endsWith(fk.ref_table)
+        );
+
+        newEdges.push({
+          id: `edge-${tableName}-${targetTableName}-${fk.column}`,
+          source: tableName,
+          sourceHandle: `source-${tableName}-${fk.column}`,
+          target: targetTableName,
+          targetHandle: `target-${targetTableName}-${fk.ref_column}`,
+          label: `${fk.column} → ${fk.ref_column} (${relationType})`,
+          type: "smoothstep",
+          animated: relationType === "1:N",
+          style: {
+            stroke: relationshipColors[relationType],
+            strokeWidth: 2,
           },
-          position: { x, y },
-          draggable: true,
-        });
-        details.foreign_keys.forEach((fk) => {
-          let relationType = "1:N";
-          if (fk.isUnique && details.primary_keys.includes(fk.column))
-            relationType = "1:1";
-          if (fk.isManyToMany) relationType = "N:N";
-
-          // Use full table name as returned by backend
-          const targetTableName = Object.keys(schema).find(
-            (table) => table.endsWith(fk.ref_table) // match full table name
-          );
-
-          newEdges.push({
-            id: `edge-${tableName}-${targetTableName}-${fk.column}`,
-            source: tableName, // current table, e.g., dbo.CustomerNotifications
-            sourceHandle: `source-${tableName}-${fk.column}`,
-            target: targetTableName, // must match node ID exactly, e.g., dbo.Customers
-            targetHandle: `target-${targetTableName}-${fk.ref_column}`,
-            label: `${fk.column} → ${fk.ref_column} (${relationType})`,
-            type: "smoothstep",
-            animated: relationType === "1:N",
-            style: { stroke: relationshipColors[relationType], strokeWidth: 2 },
-            markerEnd: {
-              type: MarkerType.ArrowClosed,
-              color: relationshipColors[relationType],
-            },
-          });
+          markerEnd: {
+            type: MarkerType.ArrowClosed,
+            color: relationshipColors[relationType],
+          },
         });
       });
+    });
 
-      setNodes(newNodes);
-      setEdges(newEdges);
-      setConnectionStatus("connected");
-      console.log(
-        "Nodes:",
-        newNodes.map((n) => n.id)
-      );
-      console.log(
-        "Edges:",
-        newEdges.map((e) => `${e.source} -> ${e.target}`)
-      );
-    } catch (err) {
-      console.error(err);
-      setError("Failed to connect. Check your connection string or server.");
-      setConnectionStatus("error");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    setNodes(newNodes);
+    setEdges(newEdges);
+  }, [schema]);
 
   return (
     <div className="erd-container">
-      <div className="toolbar">
-        <input
-          type="text"
-          value={connString}
-          onChange={(e) => setConnString(e.target.value)}
-          placeholder="Enter SQL Server connection string"
-          style={{
-            flex: 1,
-            padding: "6px 12px",
-            borderRadius: 6,
-            border: "1px solid #ccc",
-          }}
-        />
-        <button onClick={fetchSchema} disabled={isLoading}>
-          {isLoading ? "Connecting..." : "Connect & Load Schema"}
-        </button>
-      </div>
-
-      <div className="connection-status">
-        Status:{" "}
-        <span className={`status-indicator ${connectionStatus}`}>
-          {connectionStatus}
-        </span>
-      </div>
-
-      {error && (
-        <div className="error-panel">
-          <p>{error}</p>
-          <button onClick={() => setError(null)}>Dismiss</button>
-        </div>
-      )}
-
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -257,8 +182,15 @@ export default function ERD() {
     </div>
   );
 }
+
 // DRIVER={ODBC Driver 17 for SQL Server};
 // SERVER=DESKTOP-MOQH8H5\SQLEXPRESS;
 // DATABASE=employee;
+// UID=sa;
+// PWD=admin@123;
+
+// DRIVER={ODBC Driver 17 for SQL Server};
+// SERVER=KHUSHI\SQLEXPRESS;
+// DATABASE=RestomMinderDb;
 // UID=sa;
 // PWD=admin@123;

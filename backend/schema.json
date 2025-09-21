@@ -16,7 +16,7 @@
       "MigrationId"
     ],
     "foreign_keys": [],
-    "row_count": 2
+    "row_count": 4
   },
   "dbo.CustomerNotifications": {
     "columns": [
@@ -226,7 +226,7 @@
         "ref_column": "Id"
       }
     ],
-    "row_count": 1
+    "row_count": 8
   },
   "dbo.Notifications": {
     "columns": [
@@ -262,7 +262,7 @@
       "RestaurantId": true,
       "PlanId": true,
       "Message": false,
-      "CreatedAt": false,
+      "CreatedAt": true,
       "IsRead": false,
       "TaskItemId": true,
       "Type": true,
@@ -275,7 +275,7 @@
       "Id"
     ],
     "foreign_keys": [],
-    "row_count": 8
+    "row_count": 20
   },
   "dbo.PricingPlanFeatures": {
     "columns": [
@@ -401,7 +401,7 @@
       "Id"
     ],
     "foreign_keys": [],
-    "row_count": 1
+    "row_count": 3
   },
   "dbo.RestaurantPlans": {
     "columns": [
@@ -456,7 +456,7 @@
         "ref_column": "Id"
       }
     ],
-    "row_count": 19
+    "row_count": 18
   },
   "dbo.Restaurants": {
     "columns": [
@@ -574,7 +574,7 @@
         "ref_column": "Id"
       }
     ],
-    "row_count": 4
+    "row_count": 2
   },
   "dbo.SuperAdmins": {
     "columns": [
@@ -669,6 +669,6 @@
       "Id"
     ],
     "foreign_keys": [],
-    "row_count": 6
+    "row_count": 0
   }
 }
