@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useContext } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -10,6 +10,7 @@ import ReactFlow, {
   Handle,
   Position,
 } from "react-flow-renderer";
+import { ThemeContext } from "../context/ThemeContext";
 import "./ERD.css";
 
 // Table Node Component
@@ -82,6 +83,7 @@ const relationshipColors = {
 export default function ERD({ schema }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const { theme } = useContext(ThemeContext);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -175,9 +177,18 @@ export default function ERD({ schema }) {
         minZoom={0.2}
         maxZoom={1.5}
       >
-        <Controls showInteractive={false} />
-        <MiniMap nodeColor="#3b82f6" nodeStrokeWidth={3} zoomable pannable />
-        <Background color="#e2e8f0" gap={20} />
+        <Controls
+          showInteractive={false}
+          style={{ filter: theme === "dark" ? "invert(1)" : "none" }}
+        />
+        <MiniMap
+          nodeColor={(node) =>
+            relationshipColors[node.data.relationType] || "#3b82f6"
+          }
+          nodeStrokeWidth={3}
+          pannable
+        />
+        <Background color={theme === "dark" ? "#2d3748" : "#e2e8f0"} gap={20} />
       </ReactFlow>
     </div>
   );
@@ -191,6 +202,6 @@ export default function ERD({ schema }) {
 
 // DRIVER={ODBC Driver 17 for SQL Server};
 // SERVER=KHUSHI\SQLEXPRESS;
-// DATABASE=RestomMinderDb;
+// DATABASE=RestoMinderDb;
 // UID=sa;
 // PWD=admin@123;

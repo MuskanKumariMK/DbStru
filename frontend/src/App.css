@@ -1,5 +1,4 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
@@ -39,4 +38,29 @@
 
 .read-the-docs {
   color: #888;
+}
+.status-bar {
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 13px;
+}
+.status {
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+}
+
+.status.connected {
+  background-color: #10b981; /* green */
+}
+.status.connecting {
+  background-color: #8777ff; /* Blue*/
+}
+
+.status.disconnected {
+  background-color: #ef4444; /* red */
+}
+
+.status.error {
+  background-color: #f97316; /* orange */
 }

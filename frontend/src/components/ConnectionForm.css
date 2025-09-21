@@ -1,0 +1,45 @@
+.connection-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.connection-form h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.connection-form textarea {
+  resize: vertical;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: "Fira Code", monospace;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.connection-form textarea:focus {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 2px;
+  border-color: transparent;
+}
+
+.connection-form button {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-text);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.connection-form button:hover {
+  opacity: 0.9;
+}
