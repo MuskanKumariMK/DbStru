@@ -1,16 +1,13 @@
 import { useState, useContext } from "react";
-import { Database, Table, Code, Sun, Moon, Cog, History } from "lucide-react";
+import { Database, Table, Code, Sun, Moon } from "lucide-react";
 import ConnectionForm from "./ConnectionForm";
 import TableList from "./TableList";
 import { ThemeContext } from "../context/ThemeContext";
-import "./Sidebar.css";
-import Button from "./ui/Button";
-import Textarea from "./ui/Textarea";
+
 import CodeSection from "./CodeSection";
 
 export default function Sidebar({ onConnect, schema, onExecuteSQL }) {
   const [openPanel, setOpenPanel] = useState(null); // "connect", "tables", "code"
-  const [code, setCode] = useState("");
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   const handlePanelToggle = (panel) => {
@@ -18,48 +15,67 @@ export default function Sidebar({ onConnect, schema, onExecuteSQL }) {
   };
 
   return (
-    <div className="sidebar-container">
+    <div className="flex h-screen">
       {/* Left Icon Column */}
-      <div className="sidebar-icons">
+      <div className="flex flex-col items-center gap-4 bg-gray-100 p-3 dark:bg-gray-900">
         <div
-          className={`sidebar-icon ${openPanel === "connect" ? "active" : ""}`}
+          className={`cursor-pointer rounded-lg p-2 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+            openPanel === "connect"
+              ? "bg-gray-200 dark:bg-gray-700"
+              : "bg-transparent"
+          }`}
           onClick={() => handlePanelToggle("connect")}
           title="Database Connection"
         >
-          <Database size={28} />
+          <Database size={24} className="text-gray-800 dark:text-gray-200" />
         </div>
 
         <div
-          className={`sidebar-icon ${openPanel === "tables" ? "active" : ""}`}
+          className={`cursor-pointer rounded-lg p-2 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+            openPanel === "tables"
+              ? "bg-gray-200 dark:bg-gray-700"
+              : "bg-transparent"
+          }`}
           onClick={() => handlePanelToggle("tables")}
           title="Tables Schema"
         >
-          <Table size={28} />
+          <Table size={24} className="text-gray-800 dark:text-gray-200" />
         </div>
 
         <div
-          className={`sidebar-icon ${openPanel === "code" ? "active" : ""}`}
+          className={`cursor-pointer rounded-lg p-2 hover:bg-gray-200 dark:hover:bg-gray-700 ${
+            openPanel === "code"
+              ? "bg-gray-200 dark:bg-gray-700"
+              : "bg-transparent"
+          }`}
           onClick={() => handlePanelToggle("code")}
           title="Create Table / SQL Editor"
         >
-          <Code size={28} />
+          <Code size={24} className="text-gray-800 dark:text-gray-200" />
         </div>
 
-        <div className="theme-toggle">
-          <div
-            className="sidebar-icon"
-            onClick={toggleTheme}
-            title="Toggle Theme"
-          >
-            {theme === "light" ? <Moon size={24} /> : <Sun size={24} />}
-          </div>
+        {/* Theme Toggle */}
+        <div
+          className="mt-auto cursor-pointer rounded-lg p-2 hover:bg-gray-200 dark:hover:bg-gray-700"
+          onClick={toggleTheme}
+          title="Toggle Theme"
+        >
+          {theme === "light" ? (
+            <Moon size={22} className="text-gray-800 dark:text-gray-200" />
+          ) : (
+            <Sun size={22} className="text-gray-800 dark:text-gray-200" />
+          )}
         </div>
       </div>
 
       {/* Right Slide-in Panel */}
-      <div className={`sidebar-panel ${openPanel ? "" : "closed"}`}>
+      <div
+        className={`transition-all duration-300 ease-in-out ${
+          openPanel ? "w-80" : "w-0"
+        } overflow-hidden bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700`}
+      >
         {openPanel && (
-          <div className="panel-content">
+          <div className="p-4 h-full overflow-y-auto">
             {openPanel === "connect" && (
               <ConnectionForm onConnect={onConnect} />
             )}
@@ -69,7 +85,9 @@ export default function Sidebar({ onConnect, schema, onExecuteSQL }) {
                 {schema ? (
                   <TableList schema={schema} />
                 ) : (
-                  <p>No schema loaded. Connect to a database.</p>
+                  <p className="text-gray-600 dark:text-gray-400">
+                    No schema loaded. Connect to a database.
+                  </p>
                 )}
               </>
             )}

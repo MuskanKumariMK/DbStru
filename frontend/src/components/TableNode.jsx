@@ -1,33 +1,66 @@
-import { Handle, Position } from "react-flow-renderer";
-
+// Table Node Component with TailwindCSS
 const TableNode = ({ data }) => (
-  <div className="table-node">
-    <div className="table-header">
-      <span className="table-name">{data.tableName}</span>
+  <div
+    className="w-[550px] rounded-lg border border-gray-300 bg-white shadow-md 
+               dark:border-gray-700 dark:bg-gray-800"
+  >
+    {/* Table Header */}
+    <div
+      className="flex items-center justify-between rounded-t-md bg-gray-100 px-3 py-2 
+                    text-sm font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+    >
+      <span>{data.tableName}</span>
       {data.rowCount !== undefined && (
-        <span className="row-count">{data.rowCount} rows</span>
+        <span className="text-xs text-gray-600 dark:text-gray-300">
+          {data.rowCount} rows
+        </span>
       )}
     </div>
-    <div className="table-content">
-      {data.columns.map((col, idx) => (
-        <div key={col.name} className="column-row">
-          <div className="column-info">
-            <span className="column-name">{col.name}</span>
+
+    {/* Table Columns */}
+    <div className="divide-y divide-gray-200 dark:divide-gray-600">
+      {data.columns.map((col) => (
+        <div
+          key={col.name}
+          className="flex items-center justify-between px-3 py-1.5 text-sm
+                     hover:bg-gray-50 dark:hover:bg-gray-700"
+        >
+          {/* Column Info */}
+          <div className="flex flex-col">
+            <span className="font-medium text-gray-800 dark:text-gray-100">
+              {col.name}
+            </span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">
+              {col.type}
+            </span>
           </div>
+
+          {/* Constraints */}
+          <div className="flex gap-2 ml-auto text-xs">
+            {col.isPrimary && (
+              <span className="font-bold text-green-500">PK</span>
+            )}
+            {col.isForeignKey && (
+              <span className="font-bold text-blue-500">FK</span>
+            )}
+            {col.nullable && <span className="text-indigo-400">NULL</span>}
+          </div>
+
+          {/* Handles for React Flow */}
           {col.isPrimary && (
             <Handle
               type="source"
               position={Position.Right}
-              id={`source-${col.name}`}
-              style={{ top: 12 + idx * 30, background: "#10b981" }}
+              id={`source-${data.tableName}-${col.name}`}
+              className="!bg-green-500"
             />
           )}
           {col.isForeignKey && (
             <Handle
               type="target"
               position={Position.Left}
-              id={`target-${col.name}`}
-              style={{ top: 12 + idx * 30, background: "#3b82f6" }}
+              id={`target-${data.tableName}-${col.name}`}
+              className="!bg-blue-500"
             />
           )}
         </div>

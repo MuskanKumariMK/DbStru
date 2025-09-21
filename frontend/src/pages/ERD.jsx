@@ -11,52 +11,62 @@ import ReactFlow, {
   Position,
 } from "react-flow-renderer";
 import { ThemeContext } from "../context/ThemeContext";
-import "./ERD.css";
 
-// Table Node Component
+// ✅ TailwindCSS Table Node
 const TableNode = ({ data }) => (
-  <div className="table-node">
-    <div className="table-header">
-      <span className="table-name">{data.tableName}</span>
+  <div
+    className="w-[550px] rounded-lg border border-gray-300 bg-white shadow-md
+               dark:border-gray-700 dark:bg-gray-800"
+  >
+    {/* Table Header */}
+    <div
+      className="flex items-center justify-between rounded-t-lg bg-gray-100 px-3 py-2 
+                 text-sm font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-100"
+    >
+      <span>{data.tableName}</span>
       {data.rowCount !== undefined && (
-        <span className="row-count">{data.rowCount} rows</span>
+        <span className="text-xs text-gray-600 dark:text-gray-300">
+          {data.rowCount} rows
+        </span>
       )}
     </div>
-    <div className="table-content">
+
+    {/* Table Columns */}
+    <div className="divide-y divide-gray-200 dark:divide-gray-600">
       {data.columns.map((col) => (
-        <div key={col.name} className="column-row">
-          <div className="column-info">
-            <span className="column-name">{col.name}</span>
-            <span className="column-type">{col.type}</span>
+        <div
+          key={col.name}
+          className="flex items-center justify-between px-3 py-1.5 text-sm
+                     hover:bg-gray-50 dark:hover:bg-gray-700"
+        >
+          {/* Column Info */}
+          <div className="flex flex-col">
+            <span className="font-medium text-gray-800 dark:text-gray-100">
+              {col.name}
+            </span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">
+              {col.type}
+            </span>
           </div>
-          <div
-            className="column-constraints"
-            style={{ marginLeft: "auto", display: "flex", gap: "6px" }}
-          >
+
+          {/* Constraints */}
+          <div className="ml-auto flex gap-2 text-xs">
             {col.isPrimary && (
-              <span className="constraint pk" style={{ color: "#10b981" }}>
-                PK
-              </span>
+              <span className="font-bold text-green-500">PK</span>
             )}
             {col.isForeignKey && (
-              <span className="constraint fk" style={{ color: "#3b82f6" }}>
-                FK
-              </span>
+              <span className="font-bold text-blue-500">FK</span>
             )}
-            {col.nullable && (
-              <span
-                className="constraint not-null"
-                style={{ color: "#4483ef" }}
-              >
-                NULL
-              </span>
-            )}
+            {col.nullable && <span className="text-indigo-400">NULL</span>}
           </div>
+
+          {/* React Flow Handles */}
           {col.isPrimary && (
             <Handle
               type="source"
               position={Position.Right}
               id={`source-${data.tableName}-${col.name}`}
+              className="!bg-green-500"
             />
           )}
           {col.isForeignKey && (
@@ -64,6 +74,7 @@ const TableNode = ({ data }) => (
               type="target"
               position={Position.Left}
               id={`target-${data.tableName}-${col.name}`}
+              className="!bg-blue-500"
             />
           )}
         </div>
@@ -104,8 +115,8 @@ export default function ERD({ schema }) {
       const row = Math.floor(index / cols);
       const col = index % cols;
       const tableHeight = details.columns.length * COLUMN_HEIGHT + 60;
-      const x = col * (TABLE_WIDTH + 50);
-      const y = row * (tableHeight + 50);
+      const x = col * (TABLE_WIDTH + 150);
+      const y = row * (tableHeight + 100);
 
       const columnsWithMetadata = details.columns.map((colName) => ({
         name: colName,
@@ -165,7 +176,7 @@ export default function ERD({ schema }) {
   }, [schema]);
 
   return (
-    <div className="erd-container">
+    <div className="erd-container h-screen w-full bg-gray-50 dark:bg-gray-900">
       <ReactFlow
         nodes={nodes}
         edges={edges}
