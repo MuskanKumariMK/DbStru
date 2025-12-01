@@ -79,26 +79,26 @@ function App() {
         />
 
         {/* Main Content */}
-        <main className="flex-1 overflow-hidden relative bg-slate-950">
-          {activeView === 'erd' ? (
-            <ERD schema={schema} />
-          ) : activeView === 'editor' ? (
-            <div className="h-full overflow-auto p-6">
-              <SchemaEditor
-                table={selectedTable}
-                schema={schema}
-                onSave={handleSaveSchema}
-              />
+        {/* <main className="flex-1 overflow-hidden relative bg-slate-950"> */}
+        {activeView === 'erd' ? (
+          <ERD schema={schema} />
+        ) : activeView === 'editor' ? (
+          <div className="h-full overflow-auto p-6">
+            <SchemaEditor
+              table={selectedTable}
+              schema={schema}
+              onSave={handleSaveSchema}
+            />
+          </div>
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center">
+              <h2 className="text-2xl font-bold text-slate-300 mb-2">Analytics Coming Soon</h2>
+              <p className="text-slate-500">Database analytics and insights will be available here</p>
             </div>
-          ) : (
-            <div className="h-full flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="text-2xl font-bold text-slate-300 mb-2">Analytics Coming Soon</h2>
-                <p className="text-slate-500">Database analytics and insights will be available here</p>
-              </div>
-            </div>
-          )}
-        </main>
+          </div>
+        )}
+        {/* </main> */}
       </div>
 
       {/* Footer */}

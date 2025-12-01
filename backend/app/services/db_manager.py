@@ -6,13 +6,15 @@ from .adapters.sqlserver import SQLServerAdapter
 class DBManager:
     @staticmethod
     def get_db_type(connection_string: str) -> str:
-        if "mongodb" in connection_string:
+        cs = connection_string.lower()
+
+        if "mongodb" in cs:
             return "mongodb"
-        elif "postgresql" in connection_string or "postgres" in connection_string:
+        elif "postgresql" in cs or "postgres" in cs:
             return "postgresql"
-        elif "mysql" in connection_string:
+        elif "mysql" in cs:
             return "mysql"
-        elif "DRIVER" in connection_string or "sqlserver" in connection_string:
+        elif "driver" in cs or "sqlserver" in cs:
             return "sqlserver"
         return "unknown"
 
