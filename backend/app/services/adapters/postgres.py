@@ -1,5 +1,6 @@
 import psycopg2
 from .base import BaseAdapter
+from typing import List, Dict, Any
 
 class PostgresAdapter(BaseAdapter):
     def connect(self, connection_string: str):
@@ -80,3 +81,123 @@ class PostgresAdapter(BaseAdapter):
             }
             
         return schema
+
+    def create_database(self, conn, db_name: str) -> bool:
+        try:
+            # PostgreSQL requires autocommit for CREATE DATABASE
+            old_isolation_level = conn.isolation_level
+            conn.set_isolation_level(0)
+            cursor = conn.cursor()
+            cursor.execute(f'CREATE DATABASE "{db_name}"')
+            conn.set_isolation_level(old_isolation_level)
+            return True
+        except Exception as e:
+            print(f"Error creating database: {e}")
+            raise
+
+    def create_table(self, conn, table_name: str, columns: List[Dict[str, Any]]) -> bool:
+        try:
+            cursor = conn.cursor()
+            column_defs = []
+            
+            for col in columns:
+                col_def = f'"{col["name"]}" {col["type"]}'
+                if not col.get("nullable", True):
+                    col_def += " NOT NULL"
+                if col.get("isPrimaryKey", False):
+                    col_def += " PRIMARY KEY"
+                if col.get("autoIncrement", False):
+                    col_def = f'"{col["name"]}" SERIAL PRIMARY KEY'
+                column_defs.append(col_def)
+            
+            create_sql = f'CREATE TABLE "{table_name}" ({", ".join(column_defs)})'
+            cursor.execute(create_sql)
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error creating table: {e}")
+            raise
+
+    def alter_table(self, conn, table_name: str, operations: List[Dict[str, Any]]) -> bool:
+        try:
+            cursor = conn.cursor()
+            
+            for op in operations:
+                if op["type"] == "add":
+                    col = op["column"]
+                    col_def = f'{col["type"]}'
+                    if not col.get("nullable", True):
+                        col_def += " NOT NULL"
+                    alter_sql = f'ALTER TABLE "{table_name}" ADD COLUMN "{col["name"]}" {col_def}'
+                    cursor.execute(alter_sql)
+                    
+                elif op["type"] == "modify":
+                    col = op["column"]
+                    cursor.execute(f'ALTER TABLE "{table_name}" ALTER COLUMN "{col["name"]}" TYPE {col["type"]}')
+                    if col.get("nullable", True):
+                        cursor.execute(f'ALTER TABLE "{table_name}" ALTER COLUMN "{col["name"]}" DROP NOT NULL')
+                    else:
+                        cursor.execute(f'ALTER TABLE "{table_name}" ALTER COLUMN "{col["name"]}" SET NOT NULL')
+                    
+                elif op["type"] == "drop":
+                    cursor.execute(f'ALTER TABLE "{table_name}" DROP COLUMN "{op["columnName"]}"')
+            
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error altering table: {e}")
+            raise
+
+    def drop_table(self, conn, table_name: str) -> bool:
+        try:
+            cursor = conn.cursor()
+            cursor.execute(f'DROP TABLE IF EXISTS "{table_name}"')
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            print(f"Error dropping table: {e}")
+            raise
+
+    def get_table_data(self, conn, table_name: str, limit: int = 100, offset: int = 0) -> Dict[str, Any]:
+        try:
+            cursor = conn.cursor()
+            
+            # Get column info
+            cursor.execute(f"""
+                SELECT column_name, data_type
+                FROM information_schema.columns
+                WHERE table_name = '{table_name}'
+                ORDER BY ordinal_position
+            """)
+            columns_info = cursor.fetchall()
+            columns = [{"name": col[0], "type": col[1]} for col in columns_info]
+            
+            # Get total count
+            cursor.execute(f'SELECT COUNT(*) FROM "{table_name}"')
+            total = cursor.fetchone()[0]
+            
+            # Get data
+            cursor.execute(f'SELECT * FROM "{table_name}" LIMIT {limit} OFFSET {offset}')
+            rows = cursor.fetchall()
+            
+            # Convert to list of dicts
+            data = []
+            for row in rows:
+                row_dict = {columns[i]["name"]: row[i] for i in range(len(columns))}
+                data.append(row_dict)
+            
+            return {
+                "data": data,
+                "columns": columns,
+                "total": total,
+                "limit": limit,
+                "offset": offset,
+                "hasMore": (offset + limit) < total
+            }
+        except Exception as e:
+            print(f"Error fetching table data: {e}")
+            raise
+

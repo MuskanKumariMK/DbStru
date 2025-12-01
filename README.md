@@ -6,3 +6,4 @@ npm run dev
 backend
 uvicorn main:app --reload
 Driver={ODBC Driver 17 for SQL Server};Server=localhost\SQLEXPRESS;Database=RestoMinderDb;UID=sa;PWD=admin@123;Encrypt=no;
+uvicorn app.main:app --reload

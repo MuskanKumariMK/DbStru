@@ -7,8 +7,9 @@ class DBManager:
     @staticmethod
     def get_db_type(connection_string: str) -> str:
         cs = connection_string.lower()
-
-        if "mongodb" in cs:
+        if cs.startswith("mssql://"):
+            return "sqlserver"
+        elif "mongodb" in cs:
             return "mongodb"
         elif "postgresql" in cs or "postgres" in cs:
             return "postgresql"
