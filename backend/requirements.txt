@@ -2,3 +2,8 @@ fastapi
 uvicorn
 pyodbc
 pydantic
+
+pymongo
+mysql-connector-python
+psycopg2-binary
+sqlalchemy
