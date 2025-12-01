@@ -1,5 +1,6 @@
 import React from 'react';
-import { Database, Bell, Settings, User, Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Database, Bell, Settings, User, BookOpen } from 'lucide-react';
 import Badge from '../common/Badge';
 
 const Topbar = ({ currentView, onViewChange }) => {
@@ -23,8 +24,8 @@ const Topbar = ({ currentView, onViewChange }) => {
                 <button
                     onClick={() => onViewChange('erd')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${currentView === 'erd'
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-700'
                         }`}
                 >
                     Diagram
@@ -32,8 +33,8 @@ const Topbar = ({ currentView, onViewChange }) => {
                 <button
                     onClick={() => onViewChange('editor')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${currentView === 'editor'
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-700'
                         }`}
                 >
                     Editor
@@ -41,8 +42,8 @@ const Topbar = ({ currentView, onViewChange }) => {
                 <button
                     onClick={() => onViewChange('analytics')}
                     className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${currentView === 'analytics'
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'text-slate-400 hover:text-white hover:bg-slate-700'
+                        ? 'bg-blue-600 text-white shadow-md'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-700'
                         }`}
                 >
                     Analytics
@@ -51,6 +52,13 @@ const Topbar = ({ currentView, onViewChange }) => {
 
             {/* Right: Actions */}
             <div className="flex items-center gap-3">
+                <Link
+                    to="/docs"
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white transition font-medium text-sm"
+                >
+                    <BookOpen className="w-4 h-4" />
+                    <span>Docs</span>
+                </Link>
                 <button className="p-2 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white transition relative">
                     <Bell className="w-5 h-5" />
                     <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -71,3 +79,4 @@ const Topbar = ({ currentView, onViewChange }) => {
 };
 
 export default Topbar;
+

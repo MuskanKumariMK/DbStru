@@ -4,7 +4,7 @@ import Button from '../../common/Button';
 import Card from '../../common/Card';
 import Badge from '../../common/Badge';
 
-const SchemaEditor = ({ table, schema, onSave }) => {
+const SchemaEditor = ({ table, schema, onSave, onDelete }) => {
     const [columns, setColumns] = useState([]);
 
     useEffect(() => {
@@ -62,7 +62,12 @@ const SchemaEditor = ({ table, schema, onSave }) => {
                 }
                 actions={
                     <>
-                        <Button variant="danger" size="sm" icon={Trash2}>
+                        <Button
+                            variant="danger"
+                            size="sm"
+                            icon={Trash2}
+                            onClick={() => onDelete && onDelete(table)}
+                        >
                             Delete Table
                         </Button>
                         <Button variant="primary" size="sm" icon={Save} onClick={() => onSave(table, columns)}>
@@ -142,3 +147,4 @@ const SchemaEditor = ({ table, schema, onSave }) => {
 };
 
 export default SchemaEditor;
+
