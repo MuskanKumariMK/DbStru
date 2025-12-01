@@ -2,6 +2,7 @@ import pyodbc
 from urllib.parse import urlparse, parse_qs, unquote
 from .base import BaseAdapter
 from typing import List, Dict, Any
+import logging
 
 class SQLServerAdapter(BaseAdapter):
     def connect(self, connection_string: str):
@@ -172,6 +173,7 @@ class SQLServerAdapter(BaseAdapter):
                     if not col.get("nullable", True):
                         col_def += " NOT NULL"
                     alter_sql = f"ALTER TABLE [{table_name}] ADD [{col['name']}] {col_def}"
+                    logging.warning(f"Executing SQL: {alter_sql}")
                     cursor.execute(alter_sql)
                     
                 elif op["type"] == "modify":
@@ -181,7 +183,9 @@ class SQLServerAdapter(BaseAdapter):
                         col_def += " NOT NULL"
                     else:
                         col_def += " NULL"
-                    cursor.execute(f"ALTER TABLE [{table_name}] ALTER COLUMN [{col['name']}] {col_def}")
+                    alter_sql = f"ALTER TABLE [{table_name}] ALTER COLUMN [{col['name']}] {col_def}"
+                    logging.warning(f"Executing SQL: {alter_sql}")
+                    cursor.execute(alter_sql)
                     
                 elif op["type"] == "drop":
                     cursor.execute(f"ALTER TABLE [{table_name}] DROP COLUMN [{op['columnName']}]")

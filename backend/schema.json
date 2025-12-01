@@ -164,6 +164,22 @@
     "foreign_keys": [],
     "row_count": 9
   },
+  "dbo.gfdgf": {
+    "columns": [
+      "idgfd"
+    ],
+    "column_types": {
+      "idgfd": "int"
+    },
+    "nullable": {
+      "idgfd": false
+    },
+    "primary_keys": [
+      "idgfd"
+    ],
+    "foreign_keys": [],
+    "row_count": 0
+  },
   "dbo.Messages": {
     "columns": [
       "Id",
